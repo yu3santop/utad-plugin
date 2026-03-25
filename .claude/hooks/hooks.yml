@@ -1,0 +1,48 @@
+# UTAD Hooks Configuration for Claude Code
+#
+# Copy this file to your project's .claude/ directory as hooks.yml
+# and adjust paths if your project structure differs.
+#
+# Claude Code will read this file to know which hooks to run
+# before and after file edits.
+
+hooks:
+  pre_edit:
+    - name: utad-pre-edit-guard
+      command: bash .claude/hooks/pre-edit-guard.sh "$FILE"
+      description: >
+        Blocks implementation of any file that has no corresponding
+        Test Instance in .utad/test-instances/. Enforces UTAD Iron Law 1.
+      run_on:
+        - file_edit
+        - file_create
+      skip_patterns:
+        - ".utad/**"
+        - ".claude/**"
+        - "**/*.md"
+        - "**/*.yml"
+        - "**/*.yaml"
+        - "**/*.json"
+        - "**/test/**"
+        - "**/*.test.*"
+        - "**/*.spec.*"
+
+  post_edit:
+    - name: utad-post-edit-check
+      command: bash .claude/hooks/post-edit-check.sh "$FILE"
+      description: >
+        Audits coverage after each file edit. Logs uncovered code paths
+        to .utad/utad-debt.md and shows current coverage statistics.
+      run_on:
+        - file_edit
+        - file_create
+      skip_patterns:
+        - ".utad/**"
+        - ".claude/**"
+        - "**/*.md"
+        - "**/*.yml"
+        - "**/*.yaml"
+        - "**/*.json"
+        - "**/test/**"
+        - "**/*.test.*"
+        - "**/*.spec.*"

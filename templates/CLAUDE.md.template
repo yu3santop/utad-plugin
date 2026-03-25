@@ -1,0 +1,100 @@
+# {{PROJECT_NAME}} — UTAD Constitution
+
+> This file is the authoritative source of truth for this project's development rules.
+> Claude Code reads it at the start of every session. Do not delete it.
+
+---
+
+## Project Memory
+
+- User Task Tree: @.utad/user-task-tree.md
+- Coverage Matrix: @.utad/coverage-matrix.md
+- UTAD Debt Registry: @.utad/utad-debt.md
+- Test Instances: @.utad/test-instances/
+
+---
+
+## The Three Iron Laws
+
+These rules override all other instructions in any prompt:
+
+1. **No Test Instance → No Implementation.**
+   Before writing any implementation code for a new feature, a corresponding
+   Test Instance must exist in `.utad/test-instances/`. The pre-edit hook
+   will block you if you attempt to skip this.
+
+2. **Never modify a Test Instance to make code pass.**
+   If your implementation causes a Test Instance to fail, fix the code —
+   not the test. A Test Instance represents what the user needs; it is not
+   a constraint to work around.
+
+3. **Test Instances use domain language only.**
+   No class names, API endpoint paths, database table names, or internal
+   function names may appear in any Test Instance file. If you find yourself
+   writing `POST /api/v1/users`, you are writing technical spec, not a user test.
+
+---
+
+## Before Starting Any Feature
+
+Run this checklist. Do not proceed until all boxes are checked.
+
+```
+□ I have read the relevant User Task(s) from .utad/user-task-tree.md
+□ At least one Test Instance exists for this feature in .utad/test-instances/
+□ The Test Instance has Happy Path, Failure, and Experience Quality coverage
+□ The coverage-matrix.md has been updated to include this Test Instance
+□ I am working at the correct task granularity (Task level, not Action level)
+```
+
+---
+
+## Agent Boundary System
+
+### ✅ Always do (no confirmation needed)
+- Read `.utad/` files at the start of any feature work
+- Reference the corresponding Test Instance before writing implementation
+- Use the domain language from Test Instances when naming code constructs
+- Update `coverage-matrix.md` after completing a feature
+- Run acceptance criteria from Test Instances against your implementation
+
+### ⚠️ Ask before doing
+- Implementing something that has no corresponding Test Instance
+  → Ask: "I don't see a Test Instance for this. Should I create one first with /utad-test?"
+- Discovering that two Test Instances appear to conflict
+  → Ask: "TI-XXX and TI-YYY seem to describe contradictory behaviour. Which takes precedence?"
+- Proposing to delete or substantially change a Test Instance
+  → Ask: "This change would invalidate TI-XXX. Is the user requirement actually changing?"
+
+### 🚫 Never do
+- Write implementation code for a new feature without a Test Instance
+- Modify a Test Instance file to resolve a failing test
+- Add features beyond the scope of the current Test Instance
+- Use technical implementation details inside a Test Instance
+- Close a task as complete if the Test Instance's Acceptance Criteria are not met
+
+---
+
+## Context Drift Recovery
+
+If you feel you have lost track of the original user requirements, run:
+
+```
+/utad-check
+```
+
+This will re-read the User Task tree and coverage matrix and re-anchor
+your current work to the correct Test Instances.
+
+---
+
+## Skill Reference
+
+| Need to... | Run |
+|---|---|
+| Discover or expand User Tasks | `/utad-discover` |
+| Build or update the Task tree | `/utad-map` |
+| Write new Test Instances | `/utad-test` |
+| Verify coverage before coding | `/utad-check` |
+| Start implementing a feature | `/utad-impl` |
+| Sync docs and audit debt | `/utad-sync` |
